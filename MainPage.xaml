@@ -1,0 +1,95 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             x:Class="TacxRpmApp.MainPage"
+             Title="Tacx RPM Controller">
+
+    <VerticalStackLayout Padding="20" Spacing="25">
+
+        <Label Text="Tacx Neo 2T RPM"
+               FontSize="26"
+               HorizontalOptions="Center" />
+
+        <Button Text="Ligar ao Tacx"
+                Clicked="OnConnectClicked" />
+
+        <Label x:Name="StatusLabel"
+               Text="Desligado"
+               HorizontalOptions="Center" />
+
+        <!-- Incremento -->
+        <HorizontalStackLayout Spacing="10">
+            <Label Text="Incremento:" FontSize="18"/>
+            <Entry x:Name="IncrementEntry"
+                   WidthRequest="80"
+                   Text="2"
+                   Keyboard="Numeric"/>
+            <Label Text="N" FontSize="18"/>
+        </HorizontalStackLayout>
+
+        <!-- Preset Cruise -->
+        <Frame BorderColor="LightGray" Padding="10">
+            <VerticalStackLayout Spacing="10">
+
+                <Label Text="Cruise" FontSize="22"/>
+
+                <HorizontalStackLayout Spacing="10">
+                    <Button Text="-" WidthRequest="60"
+                            Clicked="OnCruiseMinus"/>
+                    <Label x:Name="CruiseLabel" Text="20 N" FontSize="20"/>
+                    <Button Text="+" WidthRequest="60"
+                            Clicked="OnCruisePlus"/>
+                </HorizontalStackLayout>
+
+                <Button Text="Aplicar Cruise"
+                        BackgroundColor="#4CAF50"
+                        TextColor="White"
+                        HeightRequest="60"
+                        Clicked="OnCruiseApply"/>
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Preset Uphill -->
+        <Frame BorderColor="LightGray" Padding="10">
+            <VerticalStackLayout Spacing="10">
+
+                <Label Text="Uphill" FontSize="22"/>
+
+                <HorizontalStackLayout Spacing="10">
+                    <Button Text="-" WidthRequest="60"
+                            Clicked="OnUphillMinus"/>
+                    <Label x:Name="UphillLabel" Text="45 N" FontSize="20"/>
+                    <Button Text="+" WidthRequest="60"
+                            Clicked="OnUphillPlus"/>
+                </HorizontalStackLayout>
+
+                <Button Text="Aplicar Uphill"
+                        BackgroundColor="#F44336"
+                        TextColor="White"
+                        HeightRequest="60"
+                        Clicked="OnUphillApply"/>
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Preset Downhill -->
+        <Frame BorderColor="LightGray" Padding="10">
+            <VerticalStackLayout Spacing="10">
+
+                <Label Text="Downhill" FontSize="22"/>
+
+                <HorizontalStackLayout Spacing="10">
+                    <Button Text="-" WidthRequest="60"
+                            Clicked="OnDownhillMinus"/>
+                    <Label x:Name="DownhillLabel" Text="10 N" FontSize="20"/>
+                    <Button Text="+" WidthRequest="60"
+                            Clicked="OnDownhillPlus"/>
+                </HorizontalStackLayout>
+
+                <Button Text="Aplicar Downhill"
+                        BackgroundColor="#2196F3"
+                        TextColor="White"
+                        HeightRequest="60"
+                        Clicked="OnDownhillApply"/>
+            </VerticalStackLayout>
+        </Frame>
+
+    </VerticalStackLayout>
+</ContentPage>
