@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TacxRpmApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c2aeefad69d41625b88cd69db4aaea6e6e63a5ba")]
 [assembly: System.Reflection.AssemblyProductAttribute("TacxRpmApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TacxRpmApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
