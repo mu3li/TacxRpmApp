@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TacxRpmApp.ConfigPage"
+             Title="Config"
+             BackgroundColor="#F5F7FA">
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20">
+            <Label Text="CONFIGURAÇÃO"
+                   FontSize="30"
+                   FontAttributes="Bold"
+                   TextColor="#26384A" />
+            <Label Text="Defina os valores dos presets e o passo dos botões."
+                   FontSize="17"
+                   TextColor="#596979" />
+
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="14" ColumnSpacing="14">
+                <Label Text="UPHILL" FontSize="22" VerticalOptions="Center" />
+                <Entry Grid.Column="1" x:Name="UphillEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="1" Text="CRUISE" FontSize="22" VerticalOptions="Center" />
+                <Entry Grid.Row="1" Grid.Column="1" x:Name="CruiseEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="2" Text="DOWNHILL" FontSize="22" VerticalOptions="Center" />
+                <Entry Grid.Row="2" Grid.Column="1" x:Name="DownhillEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" />
+                <Label Grid.Row="3" Text="PASSO" FontSize="22" VerticalOptions="Center" />
+                <Entry Grid.Row="3" Grid.Column="1" x:Name="IncrementEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" />
+            </Grid>
+
+            <Button Text="GUARDAR"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    HeightRequest="72"
+                    Clicked="OnSaveClicked" />
+            <Label x:Name="StatusLabel"
+                   TextColor="#596979"
+                   FontSize="17"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

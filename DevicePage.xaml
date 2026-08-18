@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TacxRpmApp.DevicePage"
+             Title="Dispositivos"
+             BackgroundColor="#F5F7FA">
+    <Grid Padding="16" RowDefinitions="Auto,Auto,*" RowSpacing="14">
+        <Button Text="PESQUISAR DISPOSITIVOS"
+                FontSize="20"
+                FontAttributes="Bold"
+                HeightRequest="64"
+                Clicked="OnScanClicked" />
+         <ScrollView Grid.Row="1" MaximumHeightRequest="420">
+             <Label x:Name="StatusLabel"
+                 Text="Toque em pesquisar para procurar dispositivos BLE."
+                 FontSize="14"
+                 TextColor="#596979" />
+         </ScrollView>
+        <CollectionView Grid.Row="2"
+                        x:Name="DevicesList"
+                        SelectionMode="None">
+            <CollectionView.EmptyView>
+                <Label Text="Nenhum dispositivo encontrado."
+                       FontSize="20"
+                       TextColor="#596979"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0,10"
+                          ColumnDefinitions="*,Auto"
+                          ColumnSpacing="12">
+                        <VerticalStackLayout VerticalOptions="Center">
+                            <Label Text="{Binding Name}"
+                                   FontSize="22"
+                                   FontAttributes="Bold"
+                                   TextColor="#26384A" />
+                            <Label Text="{Binding Address}"
+                                   FontSize="15"
+                                   TextColor="#596979" />
+                            <Label Text="{Binding AdvertisedServices}"
+                                FontSize="13"
+                                TextColor="#596979" />
+                        </VerticalStackLayout>
+                        <Button Grid.Column="1"
+                                Text="LIGAR"
+                                FontSize="17"
+                                FontAttributes="Bold"
+                                Padding="16,10"
+                                Clicked="OnDeviceConnectClicked"
+                                CommandParameter="{Binding .}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

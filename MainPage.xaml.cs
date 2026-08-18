@@ -1,81 +1,117 @@
+namespace TacxRpmApp;
+
 public partial class MainPage : ContentPage
 {
     private readonly TacxNeoService _tacx;
+    private readonly RpmSettings _settings;
 
-    int cruise = 20;
-    int uphill = 45;
-    int downhill = 10;
+    private enum ActivePreset
+    {
+        None,
+        Uphill,
+        Cruise,
+        Downhill
+    }
 
-    public MainPage(TacxNeoService tacx)
+    private ActivePreset _activePreset;
+
+    public MainPage(TacxNeoService tacx, RpmSettings settings)
     {
         InitializeComponent();
         _tacx = tacx;
+        _settings = settings;
+        SetActivePreset(ActivePreset.None);
     }
 
-    int Increment => int.TryParse(IncrementEntry.Text, out var inc) ? inc : 2;
+    private int Increment => _settings.Increment;
 
     // Ligação
     private async void OnConnectClicked(object sender, EventArgs e)
     {
-        StatusLabel.Text = "A ligar...";
-        var ok = await _tacx.ConnectAsync();
-        StatusLabel.Text = ok ? "Ligado ao Tacx" : "Falha na ligação";
+        var permission = await Permissions.RequestAsync<Permissions.Bluetooth>();
+        if (permission != PermissionStatus.Granted)
+        {
+            ConnectButton.Text = "PERMISSÃO NEGADA";
+            ConnectButton.BackgroundColor = Color.FromArgb("#B9C0C8");
+            return;
+        }
+
+        var devicePage = new DevicePage(_tacx);
+        await Navigation.PushAsync(devicePage);
+        if (devicePage.ConnectionSucceeded)
+        {
+            ConnectButton.Text = "CONECTADO";
+            ConnectButton.BackgroundColor = Color.FromArgb("#39A96B");
+        }
+    }
+
+    private async void OnConfigClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new ConfigPage(_settings));
     }
 
     // Cruise
     private void OnCruiseMinus(object sender, EventArgs e)
     {
-        cruise = Math.Max(0, cruise - Increment);
-        CruiseLabel.Text = $"{cruise} N";
+        _settings.Cruise = Math.Max(0, _settings.Cruise - Increment);
     }
 
     private void OnCruisePlus(object sender, EventArgs e)
     {
-        cruise += Increment;
-        CruiseLabel.Text = $"{cruise} N";
+        _settings.Cruise += Increment;
     }
 
     private async void OnCruiseApply(object sender, EventArgs e)
     {
-        await _tacx.SetResistanceAsync((ushort)cruise);
-        StatusLabel.Text = $"Cruise ({cruise} N)";
+        await _tacx.SetResistanceAsync((ushort)_settings.Cruise);
+        SetActivePreset(ActivePreset.Cruise);
     }
 
     // Uphill
     private void OnUphillMinus(object sender, EventArgs e)
     {
-        uphill = Math.Max(0, uphill - Increment);
-        UphillLabel.Text = $"{uphill} N";
+        _settings.Uphill = Math.Max(0, _settings.Uphill - Increment);
     }
 
     private void OnUphillPlus(object sender, EventArgs e)
     {
-        uphill += Increment;
-        UphillLabel.Text = $"{uphill} N";
+        _settings.Uphill += Increment;
     }
 
     private async void OnUphillApply(object sender, EventArgs e)
     {
-        await _tacx.SetResistanceAsync((ushort)uphill);
-        StatusLabel.Text = $"Uphill ({uphill} N)";
+        await _tacx.SetResistanceAsync((ushort)_settings.Uphill);
+        SetActivePreset(ActivePreset.Uphill);
     }
 
     // Downhill
     private void OnDownhillMinus(object sender, EventArgs e)
     {
-        downhill = Math.Max(0, downhill - Increment);
-        DownhillLabel.Text = $"{downhill} N";
+        _settings.Downhill = Math.Max(0, _settings.Downhill - Increment);
     }
 
     private void OnDownhillPlus(object sender, EventArgs e)
     {
-        downhill += Increment;
-        DownhillLabel.Text = $"{downhill} N";
+        _settings.Downhill += Increment;
     }
 
     private async void OnDownhillApply(object sender, EventArgs e)
     {
-        await _tacx.SetResistanceAsync((ushort)downhill);
-        StatusLabel.Text = $"Downhill ({downhill} N)";
+        await _tacx.SetResistanceAsync((ushort)_settings.Downhill);
+        SetActivePreset(ActivePreset.Downhill);
+    }
+
+    private void SetActivePreset(ActivePreset preset)
+    {
+        _activePreset = preset;
+        UphillApplyButton.BackgroundColor = preset == ActivePreset.Uphill
+            ? Color.FromArgb("#E84C3D")
+            : Color.FromArgb("#B9C0C8");
+        CruiseApplyButton.BackgroundColor = preset == ActivePreset.Cruise
+            ? Color.FromArgb("#39A96B")
+            : Color.FromArgb("#B9C0C8");
+        DownhillApplyButton.BackgroundColor = preset == ActivePreset.Downhill
+            ? Color.FromArgb("#2589D9")
+            : Color.FromArgb("#B9C0C8");
     }
 }

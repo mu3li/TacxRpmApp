@@ -1,95 +1,157 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             x:Class="TacxRpmApp.MainPage"
-             Title="Tacx RPM Controller">
-
-    <VerticalStackLayout Padding="20" Spacing="25">
-
-        <Label Text="Tacx Neo 2T RPM"
-               FontSize="26"
-               HorizontalOptions="Center" />
-
-        <Button Text="Ligar ao Tacx"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="TacxRpmApp.MainPage"
+    Title="Tacx RPM Controller"
+    BackgroundColor="#F5F7FA">
+    <Grid Padding="12,10"
+        RowSpacing="8"
+        RowDefinitions="Auto,*,*,*">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+            <Label Text="TACX NEO 2T"
+                FontSize="22"
+                FontAttributes="Bold"
+                LineBreakMode="NoWrap"
+                TextColor="#26384A"
+                VerticalOptions="Center" />
+            <Button Grid.Column="1"
+                x:Name="ConnectButton"
+                Text="CONECTAR"
+                FontSize="16"
+                FontAttributes="Bold"
+                Padding="16,10"
                 Clicked="OnConnectClicked" />
+            <Button Grid.Column="2"
+                Text="CONFIG"
+                FontSize="16"
+                FontAttributes="Bold"
+                Padding="16,10"
+                Clicked="OnConfigClicked" />
+        </Grid>
 
-        <Label x:Name="StatusLabel"
-               Text="Desligado"
-               HorizontalOptions="Center" />
+        <Grid Grid.Row="1" ColumnDefinitions="3*,2*" ColumnSpacing="8">
+            <Grid Grid.Column="0" BackgroundColor="#E84C3D">
+                <Button x:Name="UphillApplyButton"
+                    BackgroundColor="#B9C0C8"
+                    Text=""
+                    TextColor="White"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    Clicked="OnUphillApply" />
+                <VerticalStackLayout InputTransparent="True"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    Spacing="2">
+                    <Label Text="UPHILL"
+                        TextColor="#34495E"
+                        FontSize="23"
+                        FontAttributes="Bold"
+                        HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Grid>
+            <Grid Grid.Column="1" RowDefinitions="*,*" RowSpacing="0">
+                <Button Text="−"
+                    Grid.Row="1"
+                    FontSize="48"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    BackgroundColor="#30465A"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Clicked="OnUphillMinus" />
+                <Button Text="+"
+                    Grid.Row="0"
+                    FontSize="44"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    BackgroundColor="#30465A"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Clicked="OnUphillPlus" />
+            </Grid>
+        </Grid>
 
-        <!-- Incremento -->
-        <HorizontalStackLayout Spacing="10">
-            <Label Text="Incremento:" FontSize="18"/>
-            <Entry x:Name="IncrementEntry"
-                   WidthRequest="80"
-                   Text="2"
-                   Keyboard="Numeric"/>
-            <Label Text="N" FontSize="18"/>
-        </HorizontalStackLayout>
+        <Grid Grid.Row="2" ColumnDefinitions="3*,2*" ColumnSpacing="8">
+            <Grid Grid.Column="0" BackgroundColor="#39A96B">
+                <Button x:Name="CruiseApplyButton"
+                    BackgroundColor="#B9C0C8"
+                    Text=""
+                    TextColor="White"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    Clicked="OnCruiseApply" />
+                <VerticalStackLayout InputTransparent="True"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    Spacing="2">
+                    <Label Text="CRUISE"
+                        TextColor="#34495E"
+                        FontSize="23"
+                        FontAttributes="Bold"
+                        HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Grid>
+            <Grid Grid.Column="1" RowDefinitions="*,*" RowSpacing="0">
+                <Button Text="−"
+                    Grid.Row="1"
+                    FontSize="48"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    BackgroundColor="#30465A"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Clicked="OnCruiseMinus" />
+                <Button Text="+"
+                    Grid.Row="0"
+                    FontSize="44"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    BackgroundColor="#30465A"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Clicked="OnCruisePlus" />
+            </Grid>
+        </Grid>
 
-        <!-- Preset Cruise -->
-        <Frame BorderColor="LightGray" Padding="10">
-            <VerticalStackLayout Spacing="10">
-
-                <Label Text="Cruise" FontSize="22"/>
-
-                <HorizontalStackLayout Spacing="10">
-                    <Button Text="-" WidthRequest="60"
-                            Clicked="OnCruiseMinus"/>
-                    <Label x:Name="CruiseLabel" Text="20 N" FontSize="20"/>
-                    <Button Text="+" WidthRequest="60"
-                            Clicked="OnCruisePlus"/>
-                </HorizontalStackLayout>
-
-                <Button Text="Aplicar Cruise"
-                        BackgroundColor="#4CAF50"
-                        TextColor="White"
-                        HeightRequest="60"
-                        Clicked="OnCruiseApply"/>
-            </VerticalStackLayout>
-        </Frame>
-
-        <!-- Preset Uphill -->
-        <Frame BorderColor="LightGray" Padding="10">
-            <VerticalStackLayout Spacing="10">
-
-                <Label Text="Uphill" FontSize="22"/>
-
-                <HorizontalStackLayout Spacing="10">
-                    <Button Text="-" WidthRequest="60"
-                            Clicked="OnUphillMinus"/>
-                    <Label x:Name="UphillLabel" Text="45 N" FontSize="20"/>
-                    <Button Text="+" WidthRequest="60"
-                            Clicked="OnUphillPlus"/>
-                </HorizontalStackLayout>
-
-                <Button Text="Aplicar Uphill"
-                        BackgroundColor="#F44336"
-                        TextColor="White"
-                        HeightRequest="60"
-                        Clicked="OnUphillApply"/>
-            </VerticalStackLayout>
-        </Frame>
-
-        <!-- Preset Downhill -->
-        <Frame BorderColor="LightGray" Padding="10">
-            <VerticalStackLayout Spacing="10">
-
-                <Label Text="Downhill" FontSize="22"/>
-
-                <HorizontalStackLayout Spacing="10">
-                    <Button Text="-" WidthRequest="60"
-                            Clicked="OnDownhillMinus"/>
-                    <Label x:Name="DownhillLabel" Text="10 N" FontSize="20"/>
-                    <Button Text="+" WidthRequest="60"
-                            Clicked="OnDownhillPlus"/>
-                </HorizontalStackLayout>
-
-                <Button Text="Aplicar Downhill"
-                        BackgroundColor="#2196F3"
-                        TextColor="White"
-                        HeightRequest="60"
-                        Clicked="OnDownhillApply"/>
-            </VerticalStackLayout>
-        </Frame>
-
-    </VerticalStackLayout>
+        <Grid Grid.Row="3" ColumnDefinitions="3*,2*" ColumnSpacing="8">
+            <Grid Grid.Column="0" BackgroundColor="#2589D9">
+                <Button x:Name="DownhillApplyButton"
+                    BackgroundColor="#B9C0C8"
+                    Text=""
+                    TextColor="White"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    Clicked="OnDownhillApply" />
+                <VerticalStackLayout InputTransparent="True"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    Spacing="2">
+                    <Label Text="DOWNHILL"
+                        TextColor="#34495E"
+                        FontSize="23"
+                        FontAttributes="Bold"
+                        HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Grid>
+            <Grid Grid.Column="1" RowDefinitions="*,*" RowSpacing="0">
+                <Button Text="−"
+                    Grid.Row="1"
+                    FontSize="48"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    BackgroundColor="#30465A"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Clicked="OnDownhillMinus" />
+                <Button Text="+"
+                    Grid.Row="0"
+                    FontSize="44"
+                    FontAttributes="Bold"
+                    TextColor="White"
+                    BackgroundColor="#30465A"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    Clicked="OnDownhillPlus" />
+            </Grid>
+        </Grid>
+    </Grid>
 </ContentPage>

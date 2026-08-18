@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui;
 using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
 
@@ -14,6 +15,7 @@ public static class MauiProgram
             .UseMauiCommunityToolkit();
 
         builder.Services.AddSingleton<TacxNeoService>();
+        builder.Services.AddSingleton<RpmSettings>();
         builder.Services.AddSingleton<MainPage>();
 
         return builder.Build();
