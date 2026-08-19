@@ -122,4 +122,11 @@ dotnet build -f net8.0-android
 
 The Android build may report warnings for nullability in the Bluetooth service and older Android Bluetooth APIs. These warnings do not currently prevent the Android app from building or launching.
 
-The app can scan and inspect a Tacx BLE connection, but resistance commands are currently blocked in `TacxNeoService.SetResistanceAsync` until the Tacx protocol is confirmed. See [current-state.md](current-state.md) for the complete behavior and real-device test procedure.
+The app can scan, inspect, and control basic resistance on a Tacx BLE connection. `TacxNeoService.SetResistanceAsync` sends the confirmed FE-C basic-resistance command through `fec3`. Verify real-device results with:
+
+```bash
+adb logcat -c
+adb logcat -s TacxRpmApp:D
+```
+
+See [current-state.md](current-state.md) and [protocol-findings.md](protocol-findings.md) for the complete behavior and protocol details.

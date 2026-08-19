@@ -10,7 +10,7 @@
                    FontSize="30"
                    FontAttributes="Bold"
                    TextColor="#26384A" />
-            <Label Text="Defina os valores dos presets e o passo dos botões."
+            <Label Text="Defina os valores FE-C (0-200) e o passo dos botões."
                    FontSize="17"
                    TextColor="#596979" />
 

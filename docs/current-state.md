@@ -12,7 +12,7 @@ TacxRpmApp is a .NET MAUI application aimed at Android phones. Its intended purp
 
 The app also has a Bluetooth device browser and a configuration page. The interface text is currently in Portuguese, while the project and code identifiers are mostly English.
 
-Important status: Bluetooth discovery and GATT service inspection are implemented. Sending a resistance command is intentionally disabled until the exact Tacx protocol has been confirmed. Pressing an Apply button currently changes the selected button color, but does not change the trainer resistance.
+Important status: Bluetooth discovery, GATT service inspection, FE-C notifications, and basic resistance control are implemented and have been verified on a physical NEO 2T. The Apply buttons currently send FE-C basic-resistance values in the `0..200` range.
 
 ## 2. Current User Flow
 
@@ -47,7 +47,7 @@ Tap the large colored preset area to apply it. The selected preset is shown by i
 - Downhill: blue
 - Not selected: gray
 
-At the moment, the Apply action calls `TacxNeoService.SetResistanceAsync`, but that method only records an internal status message saying that commands are blocked and returns. No BLE write is performed, and the main page does not currently display that service status.
+The Apply action calls `TacxNeoService.SetResistanceAsync`, which sends an FE-C basic-resistance command through the Tacx `fec3` characteristic using Write Without Response. The command was verified on the physical trainer and returned FE-C command status `success`.
 
 ### Configuring values
 
@@ -73,7 +73,7 @@ The first run defaults are:
 
 `RpmSettings` stores values using `Microsoft.Maui.Storage.Preferences`. They persist on the device between app launches and are not stored in a project file or database. Clearing the app's Android data resets them to the defaults.
 
-One detail worth remembering: the current main-screen XAML displays the preset names but does not display the numeric value next to each preset. The values still change internally and can be edited on the configuration page.
+The main screen displays each preset as both its FE-C value and percentage equivalent, for example `45 FE-C (22.5%)`. The status line also shows the latest connection or command result. Configuration accepts preset values from `0` through `200`.
 
 ## 4. Project Map
 
@@ -107,7 +107,7 @@ The Android service uses `BluetoothLeScanner`, `BluetoothGatt`, and `BluetoothGa
 | Proprietary Tacx service | `6e40fec1-b5a3-f393-e0a9-e50e24dcca9e` |
 | Proprietary Tacx write characteristic | `6e40fec3-b5a3-f393-e0a9-e50e24dcca9e` |
 
-During service discovery the app prefers the FTMS Control Point. If it is absent, it falls back to the proprietary Tacx write characteristic. It currently stores the selected characteristic in `_controlPoint`, but does not write to it.
+During service discovery the app identifies both the standard FTMS Control Point and the proprietary Tacx characteristics. Basic resistance uses the proprietary Tacx `fec3` characteristic because that is the confirmed NEO 2T path.
 
 ### Connection behavior and errors
 
@@ -179,7 +179,7 @@ Grant Bluetooth access when Android asks. If the app was already installed, the 
 6. Select the trainer and observe the connection result.
 7. If connection succeeds, confirm the main button becomes **CONECTADO**.
 8. Tap a preset and confirm only its button changes to the preset color.
-9. Remember that the trainer resistance must not be expected to change yet. The current status is explicitly **Comandos bloqueados até confirmar o protocolo Tacx.**
+9. Confirm that the trainer resistance changes and that logcat reports `FE-C command status: command=0x30, status=success`.
 
 ### What counts as a useful test result
 
@@ -199,13 +199,13 @@ Record the phone model, Android version, trainer firmware if known, whether anot
 
 ## 9. Known Limitations And Next Work
 
-- `SetResistanceAsync` does not send a command yet.
-- The exact resistance unit and Tacx command framing still need confirmation against the trainer and protocol documentation.
+- `SetResistanceAsync` sends verified FE-C basic-resistance commands in the `0..200` range.
+- The FE-C basic-resistance framing is confirmed, but the user-facing meaning of each preset value still needs to be finalized. The current values are FE-C range values, not guaranteed Newton values.
 - The app does not subscribe to notifications or read current trainer state.
 - There is no explicit disconnect button or connection lifecycle recovery after leaving the page.
 - Scan errors are not surfaced from `OnScanFailed`.
 - Only named BLE devices are listed, and scan results are not filtered to Tacx/FTMS devices.
-- The main page does not show numeric preset values.
+- The main page shows FE-C and percentage values, but the percentage is a protocol-scale equivalent and not a guaranteed Newton measurement.
 - There are no automated tests in the repository.
 - Settings are local device preferences; there is no export, backup, or synchronization.
 The next high-value implementation step is to confirm the characteristic properties and response/notification format on a real NEO 2T, then implement one verified resistance write with logging and a focused device test before reconnecting it to all three preset buttons.

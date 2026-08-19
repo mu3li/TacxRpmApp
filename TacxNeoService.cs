@@ -1,6 +1,7 @@
 using Android.Bluetooth;
 using Android.Bluetooth.LE;
 using Android.Content;
+using Android.Util;
 using Java.Util;
 
 namespace TacxRpmApp;
@@ -10,15 +11,22 @@ public class TacxNeoService
     private readonly UUID FTMS_SERVICE = UUID.FromString("00001826-0000-1000-8000-00805f9b34fb");
     private readonly UUID CONTROL_POINT = UUID.FromString("00002ad9-0000-1000-8000-00805f9b34fb");
     private readonly UUID TACX_SERVICE = UUID.FromString("6e40fec1-b5a3-f393-e0a9-e50e24dcca9e");
+    private readonly UUID TACX_NOTIFY = UUID.FromString("6e40fec2-b5a3-f393-e0a9-e50e24dcca9e");
     private readonly UUID TACX_WRITE = UUID.FromString("6e40fec3-b5a3-f393-e0a9-e50e24dcca9e");
+    private readonly UUID CLIENT_CHARACTERISTIC_CONFIGURATION = UUID.FromString("00002902-0000-1000-8000-00805f9b34fb");
 
     private BluetoothGatt? _gatt;
     private BluetoothGattCharacteristic? _controlPoint;
+    private BluetoothGattCharacteristic? _tacxNotify;
+    private BluetoothGattCharacteristic? _tacxWrite;
     private readonly Dictionary<string, BluetoothDevice> _discoveredDevices = new();
 
     private readonly Context _context;
 
     public string LastConnectionStatus { get; private set; } = "";
+    public string LastFeCNotification { get; private set; } = "";
+    public string LastCommandStatus { get; private set; } = "";
+    public ushort? MaximumResistance { get; private set; }
 
     public TacxNeoService()
     {
@@ -80,6 +88,8 @@ public class TacxNeoService
             {
                 _gatt?.Close();
                 _controlPoint = null;
+                _tacxNotify = null;
+                _tacxWrite = null;
 
                 var connectionTaskSource = new TaskCompletionSource<bool>();
                 _gatt = device.ConnectGatt(
@@ -116,10 +126,77 @@ public class TacxNeoService
         }
     }
 
-    public Task SetResistanceAsync(ushort newtonValue)
+    public Task SetResistanceAsync(ushort resistanceValue)
     {
-        LastConnectionStatus = "Comandos bloqueados até confirmar o protocolo Tacx.";
+        var clampedValue = (byte)Math.Clamp((int)resistanceValue, 0, 200);
+        SendBasicResistance(clampedValue);
         return Task.CompletedTask;
+    }
+
+    private void SendBasicResistance(byte totalResistance)
+    {
+        if (_gatt == null || _tacxWrite == null)
+        {
+            LastConnectionStatus = "Trainer Tacx não está ligado para enviar FE-C.";
+            return;
+        }
+
+        var packet = new byte[]
+        {
+            0xA4, 0x09, 0x4E, 0x05, 0x30,
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+            totalResistance, 0x00
+        };
+        packet[^1] = CalculateFeCChecksum(packet.AsSpan(0, packet.Length - 1));
+
+        _tacxWrite.WriteType = GattWriteType.NoResponse;
+        _tacxWrite.SetValue(packet);
+        var accepted = _gatt.WriteCharacteristic(_tacxWrite);
+        LastConnectionStatus = accepted
+            ? $"Comando FE-C enviado: resistência {totalResistance}/200."
+            : "Falha ao enviar comando FE-C.";
+        Log.Debug("TacxRpmApp", $"FE-C basic resistance: {Convert.ToHexString(packet)}, accepted={accepted}");
+    }
+
+    private void ProcessTacxNotification(byte[] packet)
+    {
+        LastFeCNotification = Convert.ToHexString(packet);
+        if (packet.Length < 13 || packet[0] != 0xA4 || packet[2] != 0x4E)
+        {
+            return;
+        }
+
+        switch (packet[4])
+        {
+            case 0x36:
+                MaximumResistance = (ushort)(packet[9] | (packet[10] << 8));
+                Log.Debug("TacxRpmApp", $"FE-C capabilities: maximum resistance={MaximumResistance}");
+                break;
+            case 0x47:
+                LastCommandStatus = packet[7] switch
+                {
+                    0x00 => "success",
+                    0x01 => "fail",
+                    0x02 => "not supported",
+                    0x03 => "rejected",
+                    0xFF => "uninitialized",
+                    _ => $"unknown (0x{packet[7]:X2})"
+                };
+                LastConnectionStatus = $"Estado comando FE-C: {LastCommandStatus}.";
+                Log.Debug("TacxRpmApp", $"FE-C command status: command=0x{packet[5]:X2}, status={LastCommandStatus}");
+                break;
+        }
+    }
+
+    private static byte CalculateFeCChecksum(ReadOnlySpan<byte> packet)
+    {
+        byte checksum = 0;
+        foreach (var value in packet)
+        {
+            checksum ^= value;
+        }
+
+        return checksum;
     }
 
     private class GattCallback : BluetoothGattCallback
@@ -151,14 +228,20 @@ public class TacxNeoService
             var service = gatt.GetService(_service.FTMS_SERVICE);
             var controlPoint = service?.GetCharacteristic(_service.CONTROL_POINT);
             var tacxService = gatt.GetService(_service.TACX_SERVICE);
+            var tacxNotify = tacxService?.GetCharacteristic(_service.TACX_NOTIFY);
             var tacxWrite = tacxService?.GetCharacteristic(_service.TACX_WRITE);
             controlPoint ??= tacxWrite;
             _service._controlPoint = controlPoint;
+            _service._tacxNotify = tacxNotify;
+            _service._tacxWrite = tacxWrite;
             if (service == null)
             {
                 if (tacxWrite != null)
                 {
-                    _service.LastConnectionStatus = "Ligado via serviço proprietário Tacx.";
+                    _service.EnableTacxNotifications(gatt);
+                    _service.LastConnectionStatus = tacxNotify == null
+                        ? "Ligado via serviço proprietário Tacx, sem notificações."
+                        : "Ligado via serviço proprietário Tacx; notificações ativas.";
                     _tcs.TrySetResult(true);
                     return;
                 }
@@ -185,8 +268,48 @@ public class TacxNeoService
             {
                 _service.LastConnectionStatus = "O dispositivo não oferece o controlo FTMS.";
             }
+            else if (tacxNotify != null)
+            {
+                _service.EnableTacxNotifications(gatt);
+                _service.LastConnectionStatus = "Ligado; notificações Tacx ativas.";
+            }
             _tcs.TrySetResult(controlPoint != null);
         }
+
+        public override void OnCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic)
+        {
+            if (characteristic.Uuid?.Equals(_service.TACX_NOTIFY) == true)
+            {
+                var packet = characteristic.GetValue() ?? Array.Empty<byte>();
+                Log.Debug("TacxRpmApp", $"FE-C notification: {Convert.ToHexString(packet)}");
+                _service.ProcessTacxNotification(packet);
+                if (packet.Length < 5 || packet[4] != 0x47)
+                {
+                    _service.LastConnectionStatus = $"Notificação FE-C recebida ({packet.Length} bytes).";
+                }
+            }
+        }
+    }
+
+    private void EnableTacxNotifications(BluetoothGatt gatt)
+    {
+        if (_tacxNotify == null)
+        {
+            return;
+        }
+
+        var notificationEnabled = gatt.SetCharacteristicNotification(_tacxNotify, true);
+        var descriptor = _tacxNotify.GetDescriptor(CLIENT_CHARACTERISTIC_CONFIGURATION);
+        var descriptorWriteStarted = false;
+        if (descriptor != null)
+        {
+            descriptor.SetValue(new byte[] { 0x01, 0x00 });
+            descriptorWriteStarted = gatt.WriteDescriptor(descriptor);
+        }
+
+        Log.Debug(
+            "TacxRpmApp",
+            $"FE-C notifications: local={notificationEnabled}, descriptor={descriptorWriteStarted}");
     }
 
     private sealed class TacxScanCallback : ScanCallback

@@ -28,6 +28,9 @@ public partial class ConfigPage : ContentPage
             || uphill < 0
             || cruise < 0
             || downhill < 0
+            || uphill > 200
+            || cruise > 200
+            || downhill > 200
             || increment < 1)
         {
             StatusLabel.Text = "Use valores válidos.";

@@ -31,6 +31,10 @@ Verify:
 
 The project is Android-only, so use the Android target shown above for builds and deployment.
 
+The current protocol research is recorded in [protocol-findings.md](protocol-findings.md). It points toward Tacx FE-C over BLE rather than standard FTMS.
+
+The first FE-C diagnostic and basic-resistance command slices are now implemented. The app discovers Tacx `fec2`, enables notifications, logs received packets, and sends basic resistance through `fec3`. The command has been verified on the physical NEO 2T with command status `success`.
+
 ## 2. Test The Real Android Phone
 
 The emulator cannot reliably test the Tacx Bluetooth connection.
@@ -64,7 +68,23 @@ On the phone:
 7. Select the Tacx device.
 8. Confirm whether the app connects successfully.
 
-At this stage, a successful test means that the app finds the trainer, discovers its services, and returns to the main page showing `CONECTADO`. Resistance changing is not expected yet.
+While testing, collect the FE-C log output from a second terminal:
+
+```bash
+adb logcat -c
+adb logcat -s TacxRpmApp:D
+```
+
+After connecting, look for lines similar to:
+
+```text
+FE-C notifications: local=True, descriptor=True
+FE-C notification: A4...
+```
+
+Stop the log with `Ctrl+C` and save the complete hexadecimal notification lines. Do not press any write controls in nRF Connect and do not expect resistance to change yet.
+
+At this stage, a successful test means that the app finds the trainer, returns to the main page showing `CONECTADO`, changes resistance after applying a preset, and produces a successful page `0x47` command-status response in logcat.
 
 ## 3. Record The Bluetooth Results
 
@@ -81,7 +101,7 @@ Write down:
 
 This information determines which command path should be implemented.
 
-## 4. Inspect The Protocol Before Writing Commands
+## 4. Inspect The Protocol Before Writing More Commands
 
 Use a BLE inspection app such as nRF Connect on the Android phone. With other trainer apps closed, inspect the Tacx device and record:
 
@@ -91,27 +111,25 @@ Use a BLE inspection app such as nRF Connect on the Android phone. With other tr
 - Notification descriptors
 - Any response received after connecting
 
-The old `docs/chat-summary.md` mentions a possible command format, but it is not verified. Do not implement that command based only on the summary.
+The basic-resistance command is now verified. Read [protocol-findings.md](protocol-findings.md) before implementing target power, simulation, calibration, or other FE-C commands.
 
-## 5. Implement One Verified Resistance Command
+## 5. Finalize Resistance Semantics
 
-The next code change should be limited to `TacxNeoService`:
+The current command uses FE-C basic-resistance values from `0` to `200`. Before changing the preset defaults or labels:
 
-1. Confirm the correct write characteristic.
-2. Enable notifications if responses are required.
-3. Send one known resistance value.
-4. Log the write result and response.
-5. Verify that the trainer physically changes resistance.
-6. Handle disconnected and failed-write states.
+1. Confirm how the NEO 2T maps the `0..200` value to perceived resistance.
+2. Decide whether the UI should describe values as percentage, FE-C units, or Newtons.
+3. Add visible command success/failure feedback.
+4. Handle disconnected and failed-write states.
 
-Only after one fixed resistance command works should the three presets call it.
+The three presets already call the verified command path.
 
 ## 6. Improve The User Experience After The Protocol Works
 
 After the protocol works:
 
-- Display the numeric preset values on the main page.
-- Show connection and command errors visibly.
+- Improve the existing numeric FE-C and percentage labels if user testing shows that the scale is confusing.
+- Improve the existing visible connection and command feedback for error recovery.
 - Add a disconnect button.
 - Reconnect cleanly after Bluetooth drops.
 - Filter scan results to Tacx or FTMS devices.

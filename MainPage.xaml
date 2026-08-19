@@ -5,7 +5,7 @@
     BackgroundColor="#F5F7FA">
     <Grid Padding="12,10"
         RowSpacing="8"
-        RowDefinitions="Auto,*,*,*">
+        RowDefinitions="Auto,*,*,*,Auto">
         <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
             <Label Text="TACX NEO 2T"
                 FontSize="22"
@@ -45,6 +45,10 @@
                         TextColor="#34495E"
                         FontSize="23"
                         FontAttributes="Bold"
+                        HorizontalTextAlignment="Center" />
+                    <Label x:Name="UphillValueLabel"
+                        FontSize="17"
+                        TextColor="#34495E"
                         HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
             </Grid>
@@ -88,6 +92,10 @@
                         FontSize="23"
                         FontAttributes="Bold"
                         HorizontalTextAlignment="Center" />
+                    <Label x:Name="CruiseValueLabel"
+                        FontSize="17"
+                        TextColor="#34495E"
+                        HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
             </Grid>
             <Grid Grid.Column="1" RowDefinitions="*,*" RowSpacing="0">
@@ -130,6 +138,10 @@
                         FontSize="23"
                         FontAttributes="Bold"
                         HorizontalTextAlignment="Center" />
+                    <Label x:Name="DownhillValueLabel"
+                        FontSize="17"
+                        TextColor="#34495E"
+                        HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
             </Grid>
             <Grid Grid.Column="1" RowDefinitions="*,*" RowSpacing="0">
@@ -153,5 +165,11 @@
                     Clicked="OnDownhillPlus" />
             </Grid>
         </Grid>
+        <Label Grid.Row="4"
+            x:Name="StatusLabel"
+            FontSize="15"
+            TextColor="#596979"
+            HorizontalTextAlignment="Center"
+            LineBreakMode="TailTruncation" />
     </Grid>
 </ContentPage>

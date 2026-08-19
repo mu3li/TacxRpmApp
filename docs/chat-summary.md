@@ -2,7 +2,7 @@
 
 > This is a historical development summary, not a description of the final current behavior. For the source-verified state, setup, real-device testing, and known limitations, read [current-state.md](current-state.md).
 
-The protocol command notes below describe planned or discussed work. The current `TacxNeoService.SetResistanceAsync` intentionally does not write a command to the trainer.
+The protocol command notes below describe planned or discussed work from before real-device validation. The current `TacxNeoService.SetResistanceAsync` now sends the verified FE-C basic-resistance command through the Tacx `fec3` characteristic.
 
 Este documento resume todas as decisões, código, arquitetura e passos técnicos discutidos durante o desenvolvimento da app MAUI para controlar o Tacx Neo 2T via Bluetooth FTMS.
 
