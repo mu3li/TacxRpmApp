@@ -15,14 +15,14 @@
                    TextColor="#596979" />
 
             <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="14" ColumnSpacing="14">
-                <Label Text="UPHILL" FontSize="22" VerticalOptions="Center" />
-                <Entry Grid.Column="1" x:Name="UphillEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" />
-                <Label Grid.Row="1" Text="CRUISE" FontSize="22" VerticalOptions="Center" />
-                <Entry Grid.Row="1" Grid.Column="1" x:Name="CruiseEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" />
-                <Label Grid.Row="2" Text="DOWNHILL" FontSize="22" VerticalOptions="Center" />
-                <Entry Grid.Row="2" Grid.Column="1" x:Name="DownhillEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" />
-                <Label Grid.Row="3" Text="PASSO" FontSize="22" VerticalOptions="Center" />
-                <Entry Grid.Row="3" Grid.Column="1" x:Name="IncrementEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" />
+                <Label Text="UPHILL" FontSize="22" VerticalOptions="Center" TextColor="#596979"/>
+                <Entry Grid.Column="1" x:Name="UphillEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" TextColor="#596979"/>
+                <Label Grid.Row="1" Text="CRUISE" FontSize="22" VerticalOptions="Center" TextColor="#596979"/>
+                <Entry Grid.Row="1" Grid.Column="1" x:Name="CruiseEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" TextColor="#596979"/>
+                <Label Grid.Row="2" Text="DOWNHILL" FontSize="22" VerticalOptions="Center" TextColor="#596979"/>
+                <Entry Grid.Row="2" Grid.Column="1" x:Name="DownhillEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" TextColor="#596979"/>
+                <Label Grid.Row="3" Text="PASSO" FontSize="22" VerticalOptions="Center" TextColor="#596979"/>
+                <Entry Grid.Row="3" Grid.Column="1" x:Name="IncrementEntry" WidthRequest="110" FontSize="24" Keyboard="Numeric" HorizontalTextAlignment="Center" TextColor="#596979"/>
             </Grid>
 
             <Button Text="GUARDAR"
