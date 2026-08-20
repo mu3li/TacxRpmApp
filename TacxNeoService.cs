@@ -334,10 +334,11 @@ public class TacxNeoService
                     .ToList() ?? new List<string>();
                 _devices[address] = new BleDeviceInfo(
                     deviceName,
-                    address,
-                    advertisedServices.Count == 0
-                        ? "Nenhum serviço anunciado"
-                        : string.Join(", ", advertisedServices));
+                    address//,
+                    // advertisedServices.Count == 0
+                    //     ? "Nenhum serviço anunciado"
+                    //     : string.Join(", ", advertisedServices)
+                );
                 _bluetoothDevices[address] = result.Device;
             }
         }

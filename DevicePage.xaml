@@ -39,9 +39,11 @@
                             <Label Text="{Binding Address}"
                                    FontSize="15"
                                    TextColor="#596979" />
+                            <!-- 
                             <Label Text="{Binding AdvertisedServices}"
                                 FontSize="13"
-                                TextColor="#596979" />
+                                TextColor="#596979" /> 
+                            -->
                         </VerticalStackLayout>
                         <Button Grid.Column="1"
                                 Text="LIGAR"
