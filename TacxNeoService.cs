@@ -55,9 +55,15 @@ public class TacxNeoService
             var discoveredDevices = new Dictionary<string, BluetoothDevice>();
             var scanCallback = new TacxScanCallback(discoveredDevices);
             scanner.StartScan(scanCallback);
+            try
+            {
+                await Task.Delay(TimeSpan.FromSeconds(8));
+            }
+            finally
+            {
+                scanner.StopScan(scanCallback);
+            }
 
-            await Task.Delay(TimeSpan.FromSeconds(8));
-            scanner.StopScan(scanCallback);
             lock (_discoveredDevices)
             {
                 _discoveredDevices.Clear();
