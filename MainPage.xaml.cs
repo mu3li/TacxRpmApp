@@ -136,6 +136,7 @@ public partial class MainPage : ContentPage
     private static string FormatResistance(int value)
     {
         var clampedValue = Math.Clamp(value, 0, 200);
-        return $"{clampedValue} FE-C ({clampedValue / 2.0:0.0}%)";
+        // return $"{clampedValue} FE-C ({clampedValue / 2.0:0.0}%)";
+        return $"({clampedValue / 2.0:0.0}%)";
     }
 }
