@@ -37,7 +37,15 @@ public class TacxNeoService
     {
         try
         {
-            var adapter = BluetoothAdapter.DefaultAdapter;
+            // var adapter = BluetoothAdapter.DefaultAdapter ; DEPRECATED
+            var bluetoothManager = (BluetoothManager?)Android.App.Application.Context.GetSystemService(Context.BluetoothService);
+            var adapter = bluetoothManager?.Adapter;
+            
+            if (adapter == null || !adapter.IsEnabled)
+            {
+                return Array.Empty<BleDeviceInfo>();
+            }
+
             var scanner = adapter?.BluetoothLeScanner;
             if (scanner == null)
             {
@@ -77,7 +85,11 @@ public class TacxNeoService
                 _discoveredDevices.TryGetValue(deviceInfo.Address, out device);
             }
 
-            device ??= BluetoothAdapter.DefaultAdapter?.GetRemoteDevice(deviceInfo.Address);
+            // device ??= BluetoothAdapter.DefaultAdapter?.GetRemoteDevice(deviceInfo.Address); DEPRECATED
+            var bluetoothManager = (BluetoothManager?)Android.App.Application.Context.GetSystemService(Context.BluetoothService);
+            var adapter = bluetoothManager?.Adapter;
+            device ??= adapter?.GetRemoteDevice(deviceInfo.Address);
+            
             if (device == null)
             {
                 LastConnectionStatus = "Dispositivo indisponível.";
