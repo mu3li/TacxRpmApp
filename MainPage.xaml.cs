@@ -53,16 +53,18 @@ public partial class MainPage : ContentPage
     }
 
     // Cruise
-    private void OnCruiseMinus(object sender, EventArgs e)
+    private async void OnCruiseMinus(object sender, EventArgs e)
     {
         _settings.Cruise -= Increment;
         UpdatePresetLabels();
+        await UpdatePresetResistance(ActivePreset.Cruise, _settings.Cruise);
     }
 
-    private void OnCruisePlus(object sender, EventArgs e)
+    private async void OnCruisePlus(object sender, EventArgs e)
     {
         _settings.Cruise += Increment;
         UpdatePresetLabels();
+        await UpdatePresetResistance(ActivePreset.Cruise, _settings.Cruise);
     }
 
     private async void OnCruiseApply(object sender, EventArgs e)
@@ -73,16 +75,18 @@ public partial class MainPage : ContentPage
     }
 
     // Uphill
-    private void OnUphillMinus(object sender, EventArgs e)
+    private async void OnUphillMinus(object sender, EventArgs e)
     {
         _settings.Uphill -= Increment;
         UpdatePresetLabels();
+        await UpdatePresetResistance(ActivePreset.Uphill, _settings.Uphill);
     }
 
-    private void OnUphillPlus(object sender, EventArgs e)
+    private async void OnUphillPlus(object sender, EventArgs e)
     {
         _settings.Uphill += Increment;
         UpdatePresetLabels();
+        await UpdatePresetResistance(ActivePreset.Uphill, _settings.Uphill);
     }
 
     private async void OnUphillApply(object sender, EventArgs e)
@@ -93,16 +97,18 @@ public partial class MainPage : ContentPage
     }
 
     // Downhill
-    private void OnDownhillMinus(object sender, EventArgs e)
+    private async void OnDownhillMinus(object sender, EventArgs e)
     {
         _settings.Downhill -= Increment;
         UpdatePresetLabels();
+        await UpdatePresetResistance(ActivePreset.Downhill, _settings.Downhill);
     }
 
-    private void OnDownhillPlus(object sender, EventArgs e)
+    private async void OnDownhillPlus(object sender, EventArgs e)
     {
         _settings.Downhill += Increment;
         UpdatePresetLabels();
+        await UpdatePresetResistance(ActivePreset.Downhill, _settings.Downhill);
     }
 
     private async void OnDownhillApply(object sender, EventArgs e)
@@ -131,6 +137,14 @@ public partial class MainPage : ContentPage
         UphillValueLabel.Text = FormatResistance(_settings.Uphill);
         CruiseValueLabel.Text = FormatResistance(_settings.Cruise);
         DownhillValueLabel.Text = FormatResistance(_settings.Downhill);
+    }
+
+    private async Task UpdatePresetResistance(ActivePreset preset, int resistance)
+    {
+        if (_activePreset == preset)
+        {
+            await _tacx.SetResistanceAsync((ushort)resistance);
+        }
     }
 
     private static string FormatResistance(int value)
