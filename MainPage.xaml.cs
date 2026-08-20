@@ -55,7 +55,7 @@ public partial class MainPage : ContentPage
     // Cruise
     private void OnCruiseMinus(object sender, EventArgs e)
     {
-        _settings.Cruise = Math.Max(0, _settings.Cruise - Increment);
+        _settings.Cruise -= Increment;
         UpdatePresetLabels();
     }
 
@@ -75,7 +75,7 @@ public partial class MainPage : ContentPage
     // Uphill
     private void OnUphillMinus(object sender, EventArgs e)
     {
-        _settings.Uphill = Math.Max(0, _settings.Uphill - Increment);
+        _settings.Uphill -= Increment;
         UpdatePresetLabels();
     }
 
@@ -95,7 +95,7 @@ public partial class MainPage : ContentPage
     // Downhill
     private void OnDownhillMinus(object sender, EventArgs e)
     {
-        _settings.Downhill = Math.Max(0, _settings.Downhill - Increment);
+        _settings.Downhill -= Increment;
         UpdatePresetLabels();
     }
 
