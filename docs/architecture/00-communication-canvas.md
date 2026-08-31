@@ -31,7 +31,7 @@
 
 | Key Architecture Decisions | Key Risks & Technical Debt |
 |---|---|
-| `DCAR-002` — Android-free core with a fakeable BLE transport. **Draft**, pending sign-off. | **No CI** — nothing prevents a `using Android.*` from re-entering Core; the only guard is a local `dotnet test` |
+| `DCAR-002` — Android-free core with a fakeable BLE transport. **Accepted**. | **No CI** — nothing prevents a `using Android.*` from re-entering Core; the only guard is a local `dotnet test TacxRpmApp.Tests` |
 | | `HeartRateMonitor` is implemented and DI-registered, but no page surfaces heart rate |
 | | Trainer telemetry (FE-C pages `0x10`, `0x19`) arrives and is discarded; only `0x36` and `0x47` are parsed |
 | | No foreground service — a session cannot survive screen-off or backgrounding |
@@ -47,4 +47,4 @@
 | **Messaging:** None. BLE GATT notifications only. |
 | **Testing:** xUnit with hand-written fakes — no mocking framework. |
 | **Infrastructure:** Android phone. No server, no cloud. |
-| **CI/CD:** None. Local `dotnet build -f net8.0-android` and `dotnet test`. |
+| **CI/CD:** None. Local `dotnet build -f net8.0-android` and `dotnet test TacxRpmApp.Tests` (the bare `dotnet test` at repo root still needs the Android workload, since `TacxRpmApp.sln` also carries the `net8.0-android` app project). |

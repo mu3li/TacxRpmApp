@@ -1,7 +1,7 @@
 # Android-free core with a fakeable BLE transport
 
 **Date:** 2026-08-31
-**Status:** Draft
+**Status:** Accepted
 **Selected:** Android-free core with transport interfaces
 
 ---
