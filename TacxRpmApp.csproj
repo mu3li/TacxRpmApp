@@ -17,4 +17,22 @@
     <PackageReference Include="CommunityToolkit.Maui" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="TacxRpmApp.Core\TacxRpmApp.Core.csproj" />
+  </ItemGroup>
+
+  <!-- TacxRpmApp.Core and TacxRpmApp.Tests are sibling projects that live in
+       subfolders of this project's directory; exclude them from this project's
+       default globs so their sources aren't compiled twice. -->
+  <ItemGroup>
+    <Compile Remove="TacxRpmApp.Core\**\*.cs" />
+    <Compile Remove="TacxRpmApp.Tests\**\*.cs" />
+    <EmbeddedResource Remove="TacxRpmApp.Core\**" />
+    <EmbeddedResource Remove="TacxRpmApp.Tests\**" />
+    <None Remove="TacxRpmApp.Core\**" />
+    <None Remove="TacxRpmApp.Tests\**" />
+    <MauiXaml Remove="TacxRpmApp.Core\**" />
+    <MauiXaml Remove="TacxRpmApp.Tests\**" />
+  </ItemGroup>
+
 </Project>

@@ -50,6 +50,9 @@ artifacts/
 # VS Code
 .vscode/
 
+# CLIQ worktrees
+.worktrees/
+
 *_i.c
 *_p.c
 *_i.h
