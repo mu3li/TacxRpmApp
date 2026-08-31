@@ -14,12 +14,20 @@
                 TextColor="#26384A"
                 VerticalOptions="Center" />
             <Button Grid.Column="1"
-                x:Name="ConnectButton"
-                Text="CONECTAR"
+                Text="{Binding ConnectButtonText}"
                 FontSize="16"
                 FontAttributes="Bold"
                 Padding="16,10"
-                Clicked="OnConnectClicked" />
+                Clicked="OnConnectClicked">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding ConnectButtonState}" Value="PermissionDenied">
+                        <Setter Property="BackgroundColor" Value="#B9C0C8" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" Binding="{Binding ConnectButtonState}" Value="Connected">
+                        <Setter Property="BackgroundColor" Value="#39A96B" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
             <Button Grid.Column="2"
                 Text="CONFIG"
                 FontSize="16"
@@ -30,13 +38,18 @@
 
         <Grid Grid.Row="1" ColumnDefinitions="3*,2*" ColumnSpacing="8">
             <Grid Grid.Column="0" BackgroundColor="#E84C3D">
-                <Button x:Name="UphillApplyButton"
-                    BackgroundColor="#B9C0C8"
+                <Button BackgroundColor="#B9C0C8"
                     Text=""
                     TextColor="White"
                     FontSize="30"
                     FontAttributes="Bold"
-                    Clicked="OnUphillApply" />
+                    Command="{Binding UphillApplyCommand}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding ActivePreset}" Value="Uphill">
+                            <Setter Property="BackgroundColor" Value="#E84C3D" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
                 <VerticalStackLayout InputTransparent="True"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
@@ -46,7 +59,7 @@
                         FontSize="23"
                         FontAttributes="Bold"
                         HorizontalTextAlignment="Center" />
-                    <Label x:Name="UphillValueLabel"
+                    <Label Text="{Binding UphillValueText}"
                         FontSize="17"
                         TextColor="#34495E"
                         HorizontalTextAlignment="Center" />
@@ -61,7 +74,7 @@
                     BackgroundColor="#30465A"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill"
-                    Clicked="OnUphillMinus" />
+                    Command="{Binding UphillMinusCommand}" />
                 <Button Text="+"
                     Grid.Row="0"
                     FontSize="44"
@@ -70,19 +83,24 @@
                     BackgroundColor="#30465A"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill"
-                    Clicked="OnUphillPlus" />
+                    Command="{Binding UphillPlusCommand}" />
             </Grid>
         </Grid>
 
         <Grid Grid.Row="2" ColumnDefinitions="3*,2*" ColumnSpacing="8">
             <Grid Grid.Column="0" BackgroundColor="#39A96B">
-                <Button x:Name="CruiseApplyButton"
-                    BackgroundColor="#B9C0C8"
+                <Button BackgroundColor="#B9C0C8"
                     Text=""
                     TextColor="White"
                     FontSize="30"
                     FontAttributes="Bold"
-                    Clicked="OnCruiseApply" />
+                    Command="{Binding CruiseApplyCommand}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding ActivePreset}" Value="Cruise">
+                            <Setter Property="BackgroundColor" Value="#39A96B" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
                 <VerticalStackLayout InputTransparent="True"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
@@ -92,7 +110,7 @@
                         FontSize="23"
                         FontAttributes="Bold"
                         HorizontalTextAlignment="Center" />
-                    <Label x:Name="CruiseValueLabel"
+                    <Label Text="{Binding CruiseValueText}"
                         FontSize="17"
                         TextColor="#34495E"
                         HorizontalTextAlignment="Center" />
@@ -107,7 +125,7 @@
                     BackgroundColor="#30465A"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill"
-                    Clicked="OnCruiseMinus" />
+                    Command="{Binding CruiseMinusCommand}" />
                 <Button Text="+"
                     Grid.Row="0"
                     FontSize="44"
@@ -116,19 +134,24 @@
                     BackgroundColor="#30465A"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill"
-                    Clicked="OnCruisePlus" />
+                    Command="{Binding CruisePlusCommand}" />
             </Grid>
         </Grid>
 
         <Grid Grid.Row="3" ColumnDefinitions="3*,2*" ColumnSpacing="8">
             <Grid Grid.Column="0" BackgroundColor="#2589D9">
-                <Button x:Name="DownhillApplyButton"
-                    BackgroundColor="#B9C0C8"
+                <Button BackgroundColor="#B9C0C8"
                     Text=""
                     TextColor="White"
                     FontSize="30"
                     FontAttributes="Bold"
-                    Clicked="OnDownhillApply" />
+                    Command="{Binding DownhillApplyCommand}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding ActivePreset}" Value="Downhill">
+                            <Setter Property="BackgroundColor" Value="#2589D9" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
                 <VerticalStackLayout InputTransparent="True"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
@@ -138,7 +161,7 @@
                         FontSize="23"
                         FontAttributes="Bold"
                         HorizontalTextAlignment="Center" />
-                    <Label x:Name="DownhillValueLabel"
+                    <Label Text="{Binding DownhillValueText}"
                         FontSize="17"
                         TextColor="#34495E"
                         HorizontalTextAlignment="Center" />
@@ -153,7 +176,7 @@
                     BackgroundColor="#30465A"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill"
-                    Clicked="OnDownhillMinus" />
+                    Command="{Binding DownhillMinusCommand}" />
                 <Button Text="+"
                     Grid.Row="0"
                     FontSize="44"
@@ -162,11 +185,11 @@
                     BackgroundColor="#30465A"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill"
-                    Clicked="OnDownhillPlus" />
+                    Command="{Binding DownhillPlusCommand}" />
             </Grid>
         </Grid>
         <Label Grid.Row="4"
-            x:Name="StatusLabel"
+            Text="{Binding StatusText}"
             FontSize="15"
             TextColor="#596979"
             HorizontalTextAlignment="Center"

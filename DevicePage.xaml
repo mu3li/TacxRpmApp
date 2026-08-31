@@ -9,15 +9,15 @@
                 FontSize="20"
                 FontAttributes="Bold"
                 HeightRequest="64"
-                Clicked="OnScanClicked" />
+                Command="{Binding ScanCommand}" />
          <ScrollView Grid.Row="1" MaximumHeightRequest="420">
-             <Label x:Name="StatusLabel"
-                 Text="Toque em pesquisar para procurar dispositivos BLE."
+             <Label Text="{Binding StatusText}"
                  FontSize="14"
                  TextColor="#596979" />
          </ScrollView>
         <CollectionView Grid.Row="2"
                         x:Name="DevicesList"
+                        ItemsSource="{Binding Devices}"
                         SelectionMode="None">
             <CollectionView.EmptyView>
                 <Label Text="Nenhum dispositivo encontrado."
@@ -39,18 +39,14 @@
                             <Label Text="{Binding Address}"
                                    FontSize="15"
                                    TextColor="#596979" />
-                            <!-- 
-                            <Label Text="{Binding AdvertisedServices}"
-                                FontSize="13"
-                                TextColor="#596979" /> 
-                            -->
                         </VerticalStackLayout>
                         <Button Grid.Column="1"
                                 Text="LIGAR"
                                 FontSize="17"
                                 FontAttributes="Bold"
                                 Padding="16,10"
-                                Clicked="OnDeviceConnectClicked"
+                                IsEnabled="{Binding Source={x:Reference DevicesList}, Path=BindingContext.IsBusy, Converter={StaticResource InvertedBoolConverter}}"
+                                Command="{Binding Source={x:Reference DevicesList}, Path=BindingContext.ConnectCommand}"
                                 CommandParameter="{Binding .}" />
                     </Grid>
                 </DataTemplate>
