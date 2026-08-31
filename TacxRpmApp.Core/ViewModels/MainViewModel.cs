@@ -87,7 +87,7 @@ public partial class MainViewModel : ObservableObject
     private async Task UphillApply()
     {
         await _trainer.SetResistanceAsync(_settings.Uphill);
-        SetActivePreset(ActivePreset.Uphill);
+        ActivePreset = ActivePreset.Uphill;
         StatusText = _trainer.LastConnectionStatus;
     }
 
@@ -111,7 +111,7 @@ public partial class MainViewModel : ObservableObject
     private async Task CruiseApply()
     {
         await _trainer.SetResistanceAsync(_settings.Cruise);
-        SetActivePreset(ActivePreset.Cruise);
+        ActivePreset = ActivePreset.Cruise;
         StatusText = _trainer.LastConnectionStatus;
     }
 
@@ -135,13 +135,8 @@ public partial class MainViewModel : ObservableObject
     private async Task DownhillApply()
     {
         await _trainer.SetResistanceAsync(_settings.Downhill);
-        SetActivePreset(ActivePreset.Downhill);
+        ActivePreset = ActivePreset.Downhill;
         StatusText = _trainer.LastConnectionStatus;
-    }
-
-    private void SetActivePreset(ActivePreset preset)
-    {
-        ActivePreset = preset;
     }
 
     private void UpdatePresetLabels()

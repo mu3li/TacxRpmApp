@@ -47,7 +47,7 @@ public sealed class AndroidHeartRateTransport : IHeartRateTransport
             }
 
             var discoveredDevices = new Dictionary<string, BluetoothDevice>();
-            var scanCallback = new HeartRateScanCallback(discoveredDevices);
+            var scanCallback = new BleScanCallback(discoveredDevices);
             var filter = new ScanFilter.Builder().SetServiceUuid(new ParcelUuid(HeartRateServiceUuid)).Build();
             var settings = new ScanSettings.Builder().SetScanMode(ScanMode.LowLatency).Build();
 
@@ -249,33 +249,6 @@ public sealed class AndroidHeartRateTransport : IHeartRateTransport
                 Log.Debug("TacxRpmApp", $"Heart Rate: {Convert.ToHexString(packet)}");
                 _transport.PacketReceived?.Invoke(_transport, packet);
             }
-        }
-    }
-
-    private sealed class HeartRateScanCallback : ScanCallback
-    {
-        private readonly Dictionary<string, BleDeviceInfo> _devices = new();
-        private readonly Dictionary<string, BluetoothDevice> _bluetoothDevices;
-
-        public IReadOnlyList<BleDeviceInfo> Devices => _devices.Values.ToList();
-
-        public HeartRateScanCallback(Dictionary<string, BluetoothDevice> bluetoothDevices)
-        {
-            _bluetoothDevices = bluetoothDevices;
-        }
-
-        public override void OnScanResult(ScanCallbackType callbackType, ScanResult? result)
-        {
-            var deviceName = result?.Device?.Name;
-            if (!string.IsNullOrWhiteSpace(deviceName) && result?.Device?.Address is string address)
-            {
-                _devices[address] = new BleDeviceInfo(deviceName, address);
-                _bluetoothDevices[address] = result.Device;
-            }
-        }
-
-        public override void OnScanFailed(ScanFailure errorCode)
-        {
         }
     }
 }

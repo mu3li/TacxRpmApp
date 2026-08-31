@@ -52,7 +52,7 @@ public sealed class AndroidTrainerTransport : ITrainerTransport
             }
 
             var discoveredDevices = new Dictionary<string, BluetoothDevice>();
-            var scanCallback = new TacxScanCallback(discoveredDevices);
+            var scanCallback = new BleScanCallback(discoveredDevices);
             scanner.StartScan(scanCallback);
             try
             {
@@ -255,33 +255,6 @@ public sealed class AndroidTrainerTransport : ITrainerTransport
                 Log.Debug("TacxRpmApp", $"FE-C notification: {Convert.ToHexString(packet)}");
                 _transport.PacketReceived?.Invoke(_transport, packet);
             }
-        }
-    }
-
-    private sealed class TacxScanCallback : ScanCallback
-    {
-        private readonly Dictionary<string, BleDeviceInfo> _devices = new();
-        private readonly Dictionary<string, BluetoothDevice> _bluetoothDevices;
-
-        public IReadOnlyList<BleDeviceInfo> Devices => _devices.Values.ToList();
-
-        public TacxScanCallback(Dictionary<string, BluetoothDevice> bluetoothDevices)
-        {
-            _bluetoothDevices = bluetoothDevices;
-        }
-
-        public override void OnScanResult(ScanCallbackType callbackType, ScanResult? result)
-        {
-            var deviceName = result?.Device?.Name;
-            if (!string.IsNullOrWhiteSpace(deviceName) && result?.Device?.Address is string address)
-            {
-                _devices[address] = new BleDeviceInfo(deviceName, address);
-                _bluetoothDevices[address] = result.Device;
-            }
-        }
-
-        public override void OnScanFailed(ScanFailure errorCode)
-        {
         }
     }
 }
